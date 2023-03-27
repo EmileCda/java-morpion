@@ -48,3 +48,26 @@ joueur O, le caractère ‘X’ représente le joueur X.
 
 e. Ajouter un menu score dans lequel on sauvegardera le nombre de victoire de chaque
 joueur (par leur pseudonyme).
+
+# Intallation
+
+1. Cloner le repository
+2. compiler le programme : `javac Main.java`
+3. lancer le programme : `java Main`
+
+# Ce programme a été créé avec les versions de java suivantes
+
+```sh
+javac --version
+
+javac 19.0.2
+```
+
+```sh
+java --version
+
+java 19.0.2 2023-01-17
+Java(TM) SE Runtime Environment (build 19.0.2+7-44)
+Java HotSpot(TM) 64-Bit Server VM (build 19.0.2+7-44, mixed mode, sharing)
+
+```
