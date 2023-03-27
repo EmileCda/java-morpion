@@ -18,7 +18,7 @@ final static char PAS_FINI =  '?' ;
 // chaque caratere est délimité par [] pour la visibilite 
     public static void affiche_tableau(char[] my_array) {
         for (char my_char : my_array){
-             System.out.printf("[%c]",my_char);
+            System.out.printf("[%c]",my_char);
         }
         System.out.println();
     }
@@ -108,7 +108,26 @@ final static char PAS_FINI =  '?' ;
         return nombreOccurence ; 
     }
     
-
+// ----------------------------------------------------------------------------
+    // Première diagonal : ligne = colone
+    public static char[] get_premiere_diagonal ( char[][] grille_jeu) {
+        char[] diagonal1 = new char[grille_jeu.length];
+        for (int nb_ligne= 0 ; nb_ligne < grille_jeu.length; nb_ligne ++)
+        {
+            diagonal1[nb_ligne] = grille_jeu[nb_ligne][nb_ligne];
+        }
+        return diagonal1;
+    }
+// ----------------------------------------------------------------------------
+// deuxieme diagonal : ligne = colone opposé 
+    public static char[] get_deuxieme_diagonal ( char[][] grille_jeu) {
+        char[] diagonal2 = new char[grille_jeu.length];
+        for (int nb_ligne= 0 ; nb_ligne < grille_jeu.length; nb_ligne ++)
+        {
+            diagonal2[nb_ligne] = grille_jeu[nb_ligne][grille_jeu.length-nb_ligne-1];
+        }
+        return diagonal2;
+    }
 // ----------------------------------------------------------------------------
 // Conditions de fin de jeu
 // a. Créer une fonction prenant en paramètre notre grille et retournant 
@@ -117,14 +136,14 @@ final static char PAS_FINI =  '?' ;
 // signifiant que la partie est nulle (toutes les cases sont remplies sans
 //  victoire), ou enfin une autre valeur signifiant qu’il n’y a aucune
 // condition de fin de jeu.
-    public static char controler_grille (char[][] grille_jeu) {
+    public static char controler_grille (char joueur , char[][] grille_jeu) {
    // X =>joueur X gagne 
    // O =>joueur X gagne 
    // = => match nul
    // ? => partie interrompu
         
         int nbOccurence = 0 ;
-        char joueur = CAR_X;
+        
 //---------------- Joueur O -------------------------------------------------
 // controle ligne par ligne s'il y a une ligne gagnante.
 // le return permet de ne pas tester les autres lignes si 
@@ -145,8 +164,8 @@ final static char PAS_FINI =  '?' ;
         }
 // controle les 2 diagonales s'il y a une diagonnale  gagnante.
 // première diagonale 
-        char[] diagonal1 = {grille_jeu[0][0],grille_jeu[1][1],grille_jeu[2][2]};
-        char[] diagonal2 = {grille_jeu[0][2],grille_jeu[1][1],grille_jeu[2][0]};
+        char[] diagonal1 = get_premiere_diagonal (grille_jeu);
+        char[] diagonal2 = get_deuxieme_diagonal (grille_jeu);
         nbOccurence = count (joueur,diagonal1);
         if (nbOccurence >=3)
             return joueur  ;
@@ -155,28 +174,7 @@ final static char PAS_FINI =  '?' ;
         nbOccurence = count (joueur,diagonal2);
         if (nbOccurence >=3)
             return joueur  ;
-//---------------- Joueur O -------------------------------------------------
-        joueur = CAR_O;
-        for (char[] ligne :  grille_jeu){
-            nbOccurence = count (joueur,ligne);
-            if (nbOccurence >=3)
-                return joueur  ;
-        }
-        for (int nb_colonne = 0 ; nb_colonne < grille_jeu[0].length; nb_colonne++){
-            char[] colonne = get_column(nb_colonne,grille_jeu);
-            nbOccurence = count (joueur,colonne);
-            if (nbOccurence >=3)
-                return joueur  ;
-        }
 
-        nbOccurence = count (joueur,diagonal1);
-        if (nbOccurence >=3)
-            return joueur  ;
-
-        nbOccurence = count (joueur,diagonal2);
-        if (nbOccurence >=3)
-            return joueur  ;
-    
         nbOccurence = 0 ;
         for (char[] ligne :  grille_jeu){
             for (char mon_car :  ligne){
@@ -184,11 +182,13 @@ final static char PAS_FINI =  '?' ;
                    nbOccurence ++;  ;
             }
         }
+
         if (nbOccurence <=0)
             return MATCH_NULL ;
         
         return  PAS_FINI ;
     }
+
 // ----------------------------------------------------------------------------
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     public static void main(String[] args) {
@@ -210,8 +210,10 @@ final static char PAS_FINI =  '?' ;
         int compteur_tours = 1 ; 
         char resultat = PAS_FINI;
 
-        System.out.println("Morpion");
         do{
+            System.out.print("\033\143");
+            System.out.println("M o r p i o n");
+
 // Tour de jeu: a. Afficher le numéro du tour ainsi que le joueur qui 
 // doit jouer (O ou X)
             System.out.println(String.format(
@@ -235,14 +237,12 @@ final static char PAS_FINI =  '?' ;
 
             if (grille_jeu[index_ligne][index_colonne] != CAR_V )   // case non-vide
                 continue ;
-            
-            
+
             grille_jeu[index_ligne][index_colonne] = joueur;
 
             compteur_tours ++; 
+            resultat = controler_grille(joueur,grille_jeu);
             if (joueur == CAR_X)  joueur =CAR_O; else joueur =CAR_X ; // changer de joueur 
-            resultat = controler_grille(grille_jeu);
-
 
          }while (resultat == PAS_FINI);
 
